@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тестовое задание</title>
+    <script type="text/javascript" src="main.js"></script>
+</head>
+<body>
+<header>
+    <ul>
+        <li><button onclick="makeTable()">Создать таблицу</button></li>
+        <li><button>Фильтры</button></li>
+        <li><button>Помощь</button></li>
+    </ul>
+</header>
+<main>
+    <div class="filters_panel">
+        Найти в таблице
+        <input type="text" placeholder="Текст для поиска" id="search">
+        <button onclick="findByWord()">Найти!</button>
+        Видимость колонок
+        <label><input type="checkbox" checked id="id">Идентификатор</label>
+        <label><input type="checkbox" checked id="first">Имя</label>
+        <label><input type="checkbox" checked id="last">Фамилия</label>
+        <label><input type="checkbox" checked id="gender">Пол</label>
+        <label><input type="checkbox" checked id="memo">Ключевые фразы</label>
+        <label><input type="checkbox" checked id="img">Изображение</label>
+        <button onclick="setAllColumnsVisibility()">Готово!</button>
+    </div>
+    <table id="tab" style="display: none">
+        <thead>
+        <tr>
+            <th>Идентификатор</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Пол</th>
+            <th>Ключевые фразы</th>
+            <th>Изображение</th>
+        </tr>
+        </thead>
+    </table>
+</main>
+<footer>Alyona Kovalyova, 2019</footer>
+<div class="modal" id="modal"></div>
+</body>
+</html>
