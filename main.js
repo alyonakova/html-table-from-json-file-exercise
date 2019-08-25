@@ -31,6 +31,7 @@ class Table {
              <td>${json[key].gender}</td>
              <td>${memoArr.join('<br>')}</td>
              <td><img src="${json[key].img}"></td>`;
+            tr.onclick = openModal;
             tbody.append(tr);
         }
     }
@@ -114,5 +115,13 @@ function setAllColumnsVisibility() {
     } else {
         setColumnVisible(5, table);
     }
+}
+
+function openModal() {
+    document.getElementById("modal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
 }
 
