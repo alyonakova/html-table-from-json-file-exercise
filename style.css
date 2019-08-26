@@ -13,9 +13,9 @@
 .content_modal {
     background-color: #ffffff;
     padding: 20px;
-    width: 60%;
+    width: 30%;
     z-index: 1010;
-    margin: 300px auto;
+    margin: 100px auto;
 }
 
 .close_modal {
