@@ -32,7 +32,9 @@ class Table {
              <td>${memoArr.join('<br>')}</td>
              <td><img src="${json[key].img}"></td>`;
             tr.onclick = function() {
-                openModal(json[key].name.first, json[key].name.last, json[key].gender, memoArr);
+                let modal = new Modal(tr);
+                modal.open(json[key].name.first, json[key].name.last, json[key].gender, memoArr);
+                document.getElementById("edit_ok").onclick = modal.saveChanges;
             };
             tbody.append(tr);
         }
@@ -119,14 +121,23 @@ function setAllColumnsVisibility() {
     }
 }
 
-function openModal(first, last, gender, memo) {
-    document.getElementById("modal").style.display = "block";
-    document.getElementById("edit_name").value = first;
-    document.getElementById("edit_surname").value = last;
-    if (gender == "Male") {
-        document.getElementById("male").checked = true;
-    } else document.getElementById("female").checked = true;
-    document.getElementById("edit_memo").value = memo.join('\n');
+class Modal {
+    constructor(row) {
+        this._tableRow = row;
+    }
+
+    open(first, last, gender, memo) {
+        document.getElementById("modal").style.display = "block";
+        document.getElementById("edit_name").value = first;
+        document.getElementById("edit_surname").value = last;
+        if (gender == "Male") {
+            document.getElementById("male").checked = true;
+        } else document.getElementById("female").checked = true;
+        document.getElementById("edit_memo").value = memo.join('\n');
+    }
+    saveChanges() {
+
+    }
 }
 
 function closeModal() {
