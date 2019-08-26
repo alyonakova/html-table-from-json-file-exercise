@@ -31,7 +31,9 @@ class Table {
              <td>${json[key].gender}</td>
              <td>${memoArr.join('<br>')}</td>
              <td><img src="${json[key].img}"></td>`;
-            tr.onclick = openModal;
+            tr.onclick = function() {
+                openModal(json[key].name.first, json[key].name.last, json[key].gender, memoArr);
+            };
             tbody.append(tr);
         }
     }
@@ -117,8 +119,14 @@ function setAllColumnsVisibility() {
     }
 }
 
-function openModal() {
+function openModal(first, last, gender, memo) {
     document.getElementById("modal").style.display = "block";
+    document.getElementById("edit_name").value = first;
+    document.getElementById("edit_surname").value = last;
+    if (gender == "Male") {
+        document.getElementById("male").checked = true;
+    } else document.getElementById("female").checked = true;
+    document.getElementById("edit_memo").value = memo.join('\n');
 }
 
 function closeModal() {
