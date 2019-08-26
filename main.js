@@ -34,7 +34,7 @@ class Table {
             tr.onclick = function() {
                 let modal = new Modal(tr);
                 modal.open(json[key].name.first, json[key].name.last, json[key].gender, memoArr);
-                document.getElementById("edit_ok").onclick = modal.saveChanges;
+                document.getElementById("edit_ok").onclick = modal.saveChanges.bind(modal);
             };
             tbody.append(tr);
         }
@@ -126,6 +126,10 @@ class Modal {
         this._tableRow = row;
     }
 
+    get tableRow() {
+        return this._tableRow;
+    }
+
     open(first, last, gender, memo) {
         document.getElementById("modal").style.display = "block";
         document.getElementById("edit_name").value = first;
@@ -136,7 +140,17 @@ class Modal {
         document.getElementById("edit_memo").value = memo.join('\n');
     }
     saveChanges() {
-
+        let newName = document.getElementById("edit_name").value;
+        let newSurname = document.getElementById("edit_surname").value;
+        let gender;
+        document.getElementById("male").checked ? gender = "Male" : gender = "Female";
+        let memo = document.getElementById("edit_memo").value.split('\n');
+        if (document.getElementById("hasPicture").checked) this.tableRow.cells[5].firstElementChild.style.display = "none";
+        this.tableRow.cells[1].innerHTML = newName;
+        this.tableRow.cells[2].innerHTML = newSurname;
+        this.tableRow.cells[3].innerHTML = gender;
+        this.tableRow.cells[4].innerHTML = memo.join('<br>');
+        closeModal();
     }
 }
 
