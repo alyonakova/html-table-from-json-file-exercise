@@ -18,15 +18,22 @@
     <div class="filters_panel">
         Найти в таблице
         <input type="text" placeholder="Текст для поиска" id="search">
-        <button onclick="findByWord()">Найти!</button>
-        Видимость колонок
+        <button onclick="findByWord()">Найти!</button><br>
+        Видимость колонок<br>
         <label><input type="checkbox" checked id="id">Идентификатор</label>
         <label><input type="checkbox" checked id="first">Имя</label>
         <label><input type="checkbox" checked id="last">Фамилия</label>
         <label><input type="checkbox" checked id="gender">Пол</label>
         <label><input type="checkbox" checked id="memo">Ключевые фразы</label>
         <label><input type="checkbox" checked id="img">Изображение</label>
-        <button onclick="setAllColumnsVisibility()">Готово!</button>
+        <button onclick="setAllColumnsVisibility()">Готово!</button><br>
+        Отфильтровать по<br>
+        <label>Идентификатору: <input type="text" id="fltr_id"></label>
+        <label>Имени: <input type="text" id="fltr_name"></label>
+        <label>Фамилии: <input type="text" id="fltr_surname"></label>
+        <label>Полу: <label><input type="radio" name="fltr_gender" id="fltr_male">Male</label><label><input type="radio" name="fltr_gender" id="fltr_female">Female</label></label><br>
+        <label>Ключевым фразам: <textarea id="fltr_memo"></textarea></label><br>
+        <button>Готово!</button>
     </div>
     <table id="tab" style="display: none">
         <thead>
