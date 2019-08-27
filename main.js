@@ -158,3 +158,50 @@ function closeModal() {
     document.getElementById("modal").style.display = "none";
 }
 
+class Filter {
+     constructor(filtersArr) {
+         this._filters = filtersArr;
+     }
+     get filters() {
+         return this._filters;
+     }
+
+     doFiltration() {
+         let table = document.getElementById("tab");
+         //массив flag содержит номера столбцов, по которым нужно отфильтровать
+         let flag = [];
+         let index = 0;
+         for (let i = 0; i < this.filters.length; i++) {
+             if (this.filters[i].length !== 0) {
+                     flag[index] = i;
+                     index++;
+             }
+         }
+         if (flag.length == 0) return;
+         for (let i = 1; i < table.rows.length; i++) {
+             for (let j = 0; j < flag.length; j++) {
+                 if (this.filters[flag[j]] !== table.rows[i].cells[flag[j]].innerHTML) {
+                     table.rows[i].style.display = "none";
+                     break;
+                 }
+                 table.rows[i].style.display = "";
+             }
+         }
+     }
+}
+
+function makeFilter() {
+    let gender;
+    if (document.getElementById("fltr_male").checked) {
+        gender = "Male";
+    } else if (document.getElementById("fltr_female").checked) {
+        gender = "Female";
+    } else gender = "";
+    let filter = new Filter([document.getElementById("fltr_id").value.trim(),
+        document.getElementById("fltr_name").value.trim(),
+        document.getElementById("fltr_surname").value.trim(), gender,
+        document.getElementById("fltr_memo").value.trim()]
+    );
+    filter.doFiltration();
+}
+
