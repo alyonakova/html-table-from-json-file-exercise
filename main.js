@@ -180,10 +180,19 @@ class Filter {
          if (flag.length == 0) return;
          for (let i = 1; i < table.rows.length; i++) {
              for (let j = 0; j < flag.length; j++) {
+                 //checking memo
+                 if (flag[j] == this.filters.length - 1) {
+                     let filteredMemo = this.filters[flag[j]].split('\n');
+                     let tableMemo = table.rows[i].cells[flag[j]].innerHTML.split('<br>');
+                     if (!checkMemoEquality(filteredMemo, tableMemo)) {
+                         table.rows[i].style.display = "none";
+                         break;
+                     }
+                 } else {
                  if (this.filters[flag[j]] !== table.rows[i].cells[flag[j]].innerHTML) {
                      table.rows[i].style.display = "none";
                      break;
-                 }
+                 } }
                  table.rows[i].style.display = "";
              }
          }
@@ -203,5 +212,16 @@ function makeFilter() {
         document.getElementById("fltr_memo").value.trim()]
     );
     filter.doFiltration();
+}
+
+function checkMemoEquality(filteredMemo, tableMemo) {
+    if (filteredMemo.length == tableMemo.length) {
+        for (let k = 0; k < filteredMemo.length; k++) {
+            if (filteredMemo[k] !== tableMemo[k]) {
+                return false;
+            }
+        }
+    } else return false;
+    return true;
 }
 
