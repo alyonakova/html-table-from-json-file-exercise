@@ -178,7 +178,7 @@ class Filter {
              }
          }
          if (flag.length == 0) return;
-         for (let i = 1; i < table.rows.length; i++) {
+         for (let i = 1; i < table.rows.length - 1; i++) {
              for (let j = 0; j < flag.length; j++) {
                  //checking memo
                  if (flag[j] == this.filters.length - 1) {
