@@ -7,10 +7,6 @@ class Table {
         return this._data;
     }
 
-    set data(value) {
-        this._data = value;
-    }
-
     show() {
         document.getElementById("tab").style.display = "block";
     }
@@ -46,6 +42,7 @@ class Table {
     let json =  await response.json();
     let table = new Table(json);
     table.createTable(table.data);
+    Pager(document.getElementById("tab"), 10);
 }
 
 function findByWord() {
@@ -225,3 +222,92 @@ function checkMemoEquality(filteredMemo, tableMemo) {
     return true;
 }
 
+let Pager = (function() {
+
+    return function (docTable, numRowsOnPage) {
+        let table = docTable;
+        let config = {
+            linkOnPage: 3,
+            template: "<span class='summary'>Страница: %p из %c всего %r</span><ul class='page-nav'>%n</ul>",
+            onNavClick: undefined
+        };
+        let navigationContainer = table.tFoot.rows[0].cells[0];
+        let currentPage = 0,
+            allRowsLinks = copyRows(table.tBodies[0].children);
+        let numPages = Math.ceil(allRowsLinks.length / numRowsOnPage),
+            linksSet = createPager(numPages, config.linkOnPage);
+
+        renderTableState(currentPage, numRowsOnPage);
+
+        function copyRows(rows) {
+            let copied = [];
+            for (let i = 0; i < rows.length; i++) {
+                copied.push(rows.item(i));
+            }
+            return copied;
+        }
+
+        function renderLinks(curPage) {
+            let currentLinkArrNum = Math.floor(curPage / config.linkOnPage);
+            let pager = "<li id=\"0\">В начало</li>",
+                setKey = 0;
+            if (currentLinkArrNum > 0) {
+                pager += "<li id=\"" + (linksSet[currentLinkArrNum][0] - 1) + "\">вернуться</li>";
+            }
+            for (let i = 0; i < linksSet[currentLinkArrNum].length; i++) {
+                setKey = linksSet[currentLinkArrNum][i]; //отдельный эл-т массива
+                pager += "<li id=\"" + setKey + "\"" + (setKey === curPage ? " class=\"current\"" : "") + ">" + (setKey + 1) + "</li>";
+            }
+            if (currentLinkArrNum < linksSet.length - 1) {
+                pager += "<li id=\"" + (linksSet[currentLinkArrNum + 1][0]) + "\">далее</li>";
+            }
+            pager += "<li id=\"" + (numPages - 1) + "\">В конец</li>";
+            navigationContainer.innerHTML = config.template.replace(/%n/g, pager).
+            replace(/%p/g, String(curPage+1)).
+            replace(/%r/g, String(allRowsLinks.length)).
+            replace(/%c/g, numPages);
+        }
+
+        function renderTableState(curPage, rowsNumPerPage) {
+            let firstRowOnCurPage = curPage * rowsNumPerPage,
+                lastRowOnCurPage = Math.min(allRowsLinks.length, firstRowOnCurPage + rowsNumPerPage);
+            // Очищаем tBody от потомков (tBody.innerHTML - не сработает в IE)
+            while (table.tBodies[0].firstChild) {
+                table.tBodies[0].removeChild(table.tBodies[0].firstChild);
+            //    table.tBodies[0].firstElementChild.style.display = "none";
+            }
+            for (let i = firstRowOnCurPage; i < lastRowOnCurPage; i++) {
+               table.tBodies[0].appendChild(allRowsLinks[i]);
+            //   table.tBodies[0].rows[i].style.display = "block";
+            }
+            renderLinks(currentPage);
+        }
+
+        function createPager(numOfPages, linksEveryPage) {
+
+            let linksSet = [];
+            let key;
+            for (let i = 0; i < numOfPages; i++) {
+                key = Math.floor(i / linksEveryPage); //определяем номер подмассива
+                if (linksSet[key] === undefined) {
+                    linksSet[key] = [];
+                }
+                linksSet[key].push(i);
+            }
+            return linksSet;
+        }
+
+        navigationContainer.onclick = function(e) {
+            let target = e.target;
+            let start = 0;
+
+            if (target.tagName.toLowerCase() === "li" && isNaN(parseInt(target.id, 10)) === false) {
+                start = parseInt(target.id, 10);
+                if ((config.onNavClick && !config.onNavClick(start)) ^ start !== currentPage) {
+                    currentPage = start;
+                    renderTableState(start, numRowsOnPage);
+                }
+            }
+        };
+    };
+}(this));
