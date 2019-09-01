@@ -18,7 +18,7 @@
 .content_modal {
     background-color: #ffffff;
     padding: 20px;
-    width: 30%;
+    width: 20%;
     z-index: 1010;
     margin: 100px auto;
 }
@@ -27,6 +27,10 @@
     float: right;
     font-size: 30px;
     cursor: pointer;
+    width: 36px;
+    height: 36px;
+    background-color: #ff3531;
+    color: #ffffff;
 }
 
 header, footer{
@@ -62,6 +66,7 @@ header {
 
 ul li {
     display: inline;
+    cursor: pointer;
 }
 
 footer {
@@ -82,6 +87,53 @@ main {
 }
 
 #tab {
-    margin-left: 10px;
+    margin-left: 20px;
     margin-top: 10px;
+    border: solid 1px #d3d3d3;
+}
+
+td {
+    border: solid 1px #d3d3d3;
+}
+
+.btn {
+    border-radius: 5px;
+    height: 30px;
+    width: 60px;
+    background-color: #BEB6CA;
+}
+
+#fltr_memo {
+    margin-top: 10px;
+}
+
+#fltr_btn_ready {
+    margin-top: 4px;
+}
+
+.pager {
+    margin-left: 3px;
+    margin-right: 3px;
+    color: crimson;
+    text-decoration: underline;
+}
+
+.pager:hover {
+    text-decoration: none;
+}
+
+#male, #female {
+    margin-right: 3px;
+}
+#male_label {
+    margin-right: 8px;
+}
+
+h5 {
+    margin-top: 5px;
+}
+
+#edit_memo {
+    height: 60px;
+    width: 200px;
 }

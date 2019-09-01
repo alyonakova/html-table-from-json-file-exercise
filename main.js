@@ -38,6 +38,7 @@ class Table {
 }
 
    async function makeTable() {
+    if (document.getElementsByTagName("tbody")[0]) return;
     let response = await fetch('tableData.json');
     let json =  await response.json();
     let table = new Table(json);
@@ -69,7 +70,7 @@ function findByWord() {
 function setColumnInvisible(colNum, table) {
     let rowCells = table.rows[0].getElementsByTagName("th");
     rowCells[colNum].style.display = "none";
-    for (let i = 1; i < table.rows.length; i++) {
+    for (let i = 1; i < table.rows.length - 1; i++) {
         rowCells = table.rows[i].getElementsByTagName("td");
         rowCells[colNum].style.display = "none";
     }
@@ -78,7 +79,7 @@ function setColumnInvisible(colNum, table) {
 function setColumnVisible(colNum, table) {
     let rowCells = table.rows[0].getElementsByTagName("th");
     rowCells[colNum].style.display = "";
-    for (let i = 1; i < table.rows.length; i++) {
+    for (let i = 1; i < table.rows.length - 1; i++) {
         rowCells = table.rows[i].getElementsByTagName("td");
         rowCells[colNum].style.display = "";
     }
@@ -249,19 +250,19 @@ let Pager = (function() {
 
         function renderLinks(curPage) {
             let currentLinkArrNum = Math.floor(curPage / config.linkOnPage);
-            let pager = "<li id=\"0\">В начало</li>",
+            let pager = "<li class='pager' id=\"0\">В начало</li>",
                 setKey = 0;
             if (currentLinkArrNum > 0) {
-                pager += "<li id=\"" + (linksSet[currentLinkArrNum][0] - 1) + "\">вернуться</li>";
+                pager += "<li class='pager' id=\"" + (linksSet[currentLinkArrNum][0] - 1) + "\">вернуться</li>";
             }
             for (let i = 0; i < linksSet[currentLinkArrNum].length; i++) {
                 setKey = linksSet[currentLinkArrNum][i]; //отдельный эл-т массива
-                pager += "<li id=\"" + setKey + "\"" + (setKey === curPage ? " class=\"current\"" : "") + ">" + (setKey + 1) + "</li>";
+                pager += "<li class='pager' id=\"" + setKey + "\"" + (setKey === curPage ? " class=\"current\"" : "") + ">" + (setKey + 1) + "</li>";
             }
             if (currentLinkArrNum < linksSet.length - 1) {
-                pager += "<li id=\"" + (linksSet[currentLinkArrNum + 1][0]) + "\">далее</li>";
+                pager += "<li class='pager' id=\"" + (linksSet[currentLinkArrNum + 1][0]) + "\">далее</li>";
             }
-            pager += "<li id=\"" + (numPages - 1) + "\">В конец</li>";
+            pager += "<li class='pager' id=\"" + (numPages - 1) + "\">В конец</li>";
             navigationContainer.innerHTML = config.template.replace(/%n/g, pager).
             replace(/%p/g, String(curPage+1)).
             replace(/%r/g, String(allRowsLinks.length)).
@@ -311,3 +312,11 @@ let Pager = (function() {
         };
     };
 }(this));
+
+function showFilters() {
+    if (document.getElementsByClassName("filters_panel")[0].style.display == "none") {
+        document.getElementsByClassName("filters_panel")[0].style.display = "block";
+    } else {
+        document.getElementsByClassName("filters_panel")[0].style.display = "none";
+    }
+}

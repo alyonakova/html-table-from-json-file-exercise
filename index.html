@@ -10,29 +10,29 @@
 <header>
     <ul>
         <li><button onclick="makeTable()" class="head_buttons" id="head_create">Создать таблицу</button></li>
-        <li><button class="head_buttons">Фильтры</button></li>
+        <li><button class="head_buttons" onclick="showFilters()">Фильтры</button></li>
     </ul>
 </header>
 <main>
-    <div class="filters_panel">
-        Найти в таблице
+    <div class="filters_panel" style="display: none">
+        <h4>Найти в таблице</h4>
         <input type="text" placeholder="Текст для поиска" id="search">
-        <button onclick="findByWord()">Найти!</button><br>
-        Видимость колонок<br>
+        <button onclick="findByWord()" class="btn">Найти!</button><br>
+        <h4>Видимость колонок</h4>
         <label><input type="checkbox" checked id="id">Идентификатор</label>
         <label><input type="checkbox" checked id="first">Имя</label>
         <label><input type="checkbox" checked id="last">Фамилия</label>
         <label><input type="checkbox" checked id="gender">Пол</label>
         <label><input type="checkbox" checked id="memo">Ключевые фразы</label>
         <label><input type="checkbox" checked id="img">Изображение</label>
-        <button onclick="setAllColumnsVisibility()">Готово!</button><br>
-        Отфильтровать по<br>
-        <label>Идентификатору: <input type="text" id="fltr_id"></label>
-        <label>Имени: <input type="text" id="fltr_name"></label>
-        <label>Фамилии: <input type="text" id="fltr_surname"></label>
+        <button onclick="setAllColumnsVisibility()" class="btn">Готово!</button><br>
+        <h4>Отфильтровать по</h4>
+        <label>Идентификатору: <input type="text" id="fltr_id" placeholder="id"></label>
+        <label>Имени: <input type="text" id="fltr_name" placeholder="Name"></label>
+        <label>Фамилии: <input type="text" id="fltr_surname" placeholder="Surname"></label>
         <label>Полу: <label><input type="radio" name="fltr_gender" id="fltr_male">Male</label><label><input type="radio" name="fltr_gender" id="fltr_female">Female</label></label><br>
-        <label>Ключевым фразам: <textarea id="fltr_memo"></textarea></label><br>
-        <button onclick="makeFilter()">Готово!</button>
+        <label>Ключевым фразам: <textarea id="fltr_memo" placeholder="Memo"></textarea></label><br>
+        <button onclick="makeFilter()" class="btn" id="fltr_btn_ready">Готово!</button>
     </div>
     <table id="tab" style="display: none">
         <thead>
@@ -56,19 +56,19 @@
 <div class="modal" id="modal">
     <div class="content_modal">
         <button class="close_modal" onclick="closeModal()">x</button>
-        <p>Редактировать данные</p>
+        <h3>Редактировать данные</h3>
         <div>
-            <label>Имя</label><br>
+            <h5>Имя</h5>
             <input type="text" id="edit_name"><br>
-            <label>Фамилия</label><br>
+            <h5>Фамилия</h5>
             <input type="text" id="edit_surname"><br>
-            <label>Пол</label><br>
-            <label><input type="radio" name="ed_gender" id="male">Male</label><label><input type="radio" name="ed_gender" id="female">Female</label><br>
-            <label>Ключевые фразы</label><br>
+            <h5>Пол</h5>
+            <label id="male_label"><input type="radio" name="ed_gender" id="male">Male</label><label><input type="radio" name="ed_gender" id="female">Female</label><br>
+            <h5>Ключевые фразы</h5>
             <textarea id="edit_memo"></textarea><br>
-            <label>Изображение</label><br>
+            <h5>Изображение</h5>
             <label>Скрыть<input type="checkbox" id="hasPicture"></label><br>
-            <button id="edit_ok">Ок</button>
+            <button id="edit_ok" class="btn">Ок</button>
         </div>
     </div>
 </div>
