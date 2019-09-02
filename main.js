@@ -1,3 +1,4 @@
+let allBodyRows;
 class Table {
     constructor(data) {
         this._data = data;
@@ -34,6 +35,11 @@ class Table {
             };
             tbody.append(tr);
         }
+        let copied = [];
+        for (let i = 0; i < document.getElementById("tab").tBodies[0].children.length; i++) {
+            copied.push(document.getElementById("tab").tBodies[0].children.item(i));
+        }
+        allBodyRows = copied;
     }
 }
 
@@ -166,6 +172,12 @@ class Filter {
 
      doFiltration() {
          let table = document.getElementById("tab");
+         while (table.tBodies[0].firstChild) {
+             table.tBodies[0].removeChild(table.tBodies[0].firstChild);
+         }
+         for (let i = 0; i < allBodyRows.length; i++) {
+             table.tBodies[0].appendChild(allBodyRows[i]);
+         }
          //массив flag содержит номера столбцов, по которым нужно отфильтровать
          let flag = [];
          let index = 0;
@@ -176,23 +188,26 @@ class Filter {
              }
          }
          if (flag.length == 0) return;
-         for (let i = 1; i < table.rows.length - 1; i++) {
+         let rowsToDelete = [];
+         for (let i = 1; i < allBodyRows.length + 1; i++) {
              for (let j = 0; j < flag.length; j++) {
                  //checking memo
                  if (flag[j] == this.filters.length - 1) {
                      let filteredMemo = this.filters[flag[j]].split('\n');
                      let tableMemo = table.rows[i].cells[flag[j]].innerHTML.split('<br>');
                      if (!checkMemoEquality(filteredMemo, tableMemo)) {
-                         table.rows[i].style.display = "none";
+                         rowsToDelete.push(table.rows[i]);
                          break;
                      }
                  } else {
                  if (this.filters[flag[j]] !== table.rows[i].cells[flag[j]].innerHTML) {
-                     table.rows[i].style.display = "none";
+                     rowsToDelete.push(table.rows[i]);
                      break;
                  } }
-                 table.rows[i].style.display = "";
              }
+         }
+         for (let k = 0; k < rowsToDelete.length; k++) {
+             rowsToDelete[k].remove();
          }
      }
 }
@@ -210,6 +225,7 @@ function makeFilter() {
         document.getElementById("fltr_memo").value.trim()]
     );
     filter.doFiltration();
+    Pager(document.getElementById("tab"), 10);
 }
 
 function checkMemoEquality(filteredMemo, tableMemo) {
@@ -272,14 +288,11 @@ let Pager = (function() {
         function renderTableState(curPage, rowsNumPerPage) {
             let firstRowOnCurPage = curPage * rowsNumPerPage,
                 lastRowOnCurPage = Math.min(allRowsLinks.length, firstRowOnCurPage + rowsNumPerPage);
-            // Очищаем tBody от потомков (tBody.innerHTML - не сработает в IE)
             while (table.tBodies[0].firstChild) {
                 table.tBodies[0].removeChild(table.tBodies[0].firstChild);
-            //    table.tBodies[0].firstElementChild.style.display = "none";
             }
             for (let i = firstRowOnCurPage; i < lastRowOnCurPage; i++) {
                table.tBodies[0].appendChild(allRowsLinks[i]);
-            //   table.tBodies[0].rows[i].style.display = "block";
             }
             renderLinks(currentPage);
         }
