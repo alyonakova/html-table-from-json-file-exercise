@@ -1,4 +1,5 @@
 let allBodyRows;
+let allFilteredRows;
 class Table {
     constructor(data) {
         this._data = data;
@@ -40,6 +41,7 @@ class Table {
             copied.push(document.getElementById("tab").tBodies[0].children.item(i));
         }
         allBodyRows = copied;
+        allFilteredRows = copied;
     }
 }
 
@@ -53,11 +55,17 @@ class Table {
 }
 
 function findByWord() {
+    let table = document.getElementById("tab");
     let enteredWord = document.getElementById("search").value;
     if (enteredWord.trim() === '') {
         return;
     }
-    let table = document.getElementById("tab");
+    while (table.tBodies[0].firstChild) {
+        table.tBodies[0].removeChild(table.tBodies[0].firstChild);
+    }
+    for (let i = 0; i < allFilteredRows.length; i++) {
+        table.tBodies[0].appendChild(allFilteredRows[i]);
+    }
     let reg = new RegExp(enteredWord, 'i');
     let flag = false;
     for (let i = 1; i < table.rows.length; i++) {
@@ -71,6 +79,7 @@ function findByWord() {
             }
         }
     }
+    Pager(document.getElementById("tab"), 10);
 }
 
 function setColumnInvisible(colNum, table) {
@@ -209,6 +218,11 @@ class Filter {
          for (let k = 0; k < rowsToDelete.length; k++) {
              rowsToDelete[k].remove();
          }
+         let copied = [];
+         for (let i = 0; i < document.getElementById("tab").tBodies[0].children.length; i++) {
+             copied.push(document.getElementById("tab").tBodies[0].children.item(i));
+         }
+         allFilteredRows = copied;
      }
 }
 
