@@ -30,8 +30,9 @@ class Table {
              <td>${memoArr.join('<br>')}</td>
              <td><img src="${json[key].img}"></td>`;
             tr.onclick = function() {
+                let arr = tr.children.item(4).innerHTML.split('<br>');
                 let modal = new Modal(tr);
-                modal.open(json[key].name.first, json[key].name.last, json[key].gender, memoArr);
+                modal.open(tr.children.item(1).innerHTML, tr.children.item(2).innerHTML, tr.children.item(3).innerHTML, arr);
                 document.getElementById("edit_ok").onclick = modal.saveChanges.bind(modal);
             };
             tbody.append(tr);
