@@ -101,6 +101,7 @@ td {
     height: 30px;
     width: 60px;
     background-color: #BEB6CA;
+    cursor: pointer;
 }
 
 #fltr_memo {

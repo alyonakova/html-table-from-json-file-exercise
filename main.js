@@ -159,7 +159,9 @@ class Modal {
         let gender;
         document.getElementById("male").checked ? gender = "Male" : gender = "Female";
         let memo = document.getElementById("edit_memo").value.split('\n');
-        if (document.getElementById("hasPicture").checked) this.tableRow.cells[5].firstElementChild.style.display = "none";
+        if (document.getElementById("hasPicture").checked) {
+            this.tableRow.cells[5].firstElementChild.style.display = "none";
+        } else this.tableRow.cells[5].firstElementChild.style.display = "block";
         this.tableRow.cells[1].innerHTML = newName;
         this.tableRow.cells[2].innerHTML = newSurname;
         this.tableRow.cells[3].innerHTML = gender;
