@@ -1,4 +1,6 @@
+/* ссылки на все строки изначальной таблицы */
 let allBodyRows;
+/* ссылки на все строки отфильтрованной таблицы */
 let allFilteredRows;
 class Table {
     constructor(data) {
@@ -9,9 +11,17 @@ class Table {
         return this._data;
     }
 
+    /**
+     * Отображение таблицы
+     */
     show() {
         document.getElementById("tab").style.display = "block";
     }
+
+    /**
+     * Создание таблицы на основе имеющихся данных
+     * @param {JSON} json - данные файла
+     */
     createTable(json) {
         this.show();
         document.getElementById("tab").append(document.createElement('tbody'));
@@ -29,6 +39,7 @@ class Table {
              <td>${json[key].gender}</td>
              <td>${memoArr.join('<br>')}</td>
              <td><img src="${json[key].img}"></td>`;
+            //обработчик нажатия
             tr.onclick = function() {
                 let arr = tr.children.item(4).innerHTML.split('<br>');
                 let modal = new Modal(tr);
@@ -41,12 +52,17 @@ class Table {
         for (let i = 0; i < document.getElementById("tab").tBodies[0].children.length; i++) {
             copied.push(document.getElementById("tab").tBodies[0].children.item(i));
         }
+        //понадобятся при фильтрации и поиске по таблице (чтоб искать по всем страницам таблицы, а не по текущей)
         allBodyRows = copied;
         allFilteredRows = copied;
     }
 }
 
+/**
+ * Выполнение создания таблицы с постраничным выводом
+ */
    async function makeTable() {
+       //не создавать, если уже есть
     if (document.getElementsByTagName("tbody")[0]) return;
     let response = await fetch('tableData.json');
     let json =  await response.json();
@@ -55,12 +71,16 @@ class Table {
     Pager(document.getElementById("tab"), 10);
 }
 
+/**
+ * Поиск по таблице с выделением ячейки, содержащей найденное слово
+ */
 function findByWord() {
     let table = document.getElementById("tab");
     let enteredWord = document.getElementById("search").value;
     if (enteredWord.trim() === '') {
         return;
     }
+    //очистка текущей таблицы (страницы) и создание полной таблицы
     while (table.tBodies[0].firstChild) {
         table.tBodies[0].removeChild(table.tBodies[0].firstChild);
     }
@@ -83,6 +103,11 @@ function findByWord() {
     Pager(document.getElementById("tab"), 10);
 }
 
+/**
+ * Скрытие колонки таблицы
+ * @param {Number} colNum - номер колонки, которую нужно скрыть
+ * @param {HTMLElement} table - таблица
+ */
 function setColumnInvisible(colNum, table) {
     let rowCells = table.rows[0].getElementsByTagName("th");
     rowCells[colNum].style.display = "none";
@@ -92,6 +117,11 @@ function setColumnInvisible(colNum, table) {
     }
 }
 
+/**
+ * Показ колонки таблицы
+ * @param {Number} colNum - номер колонки, которую нужно отобразить
+ * @param {HTMLElement} table - таблица
+ */
 function setColumnVisible(colNum, table) {
     let rowCells = table.rows[0].getElementsByTagName("th");
     rowCells[colNum].style.display = "";
@@ -101,6 +131,9 @@ function setColumnVisible(colNum, table) {
     }
 }
 
+/**
+ * Настройка видимости колонок таблицы
+ */
 function setAllColumnsVisibility() {
     let table = document.getElementById("tab");
     if (!document.getElementById("id").checked) {
@@ -144,6 +177,13 @@ class Modal {
         return this._tableRow;
     }
 
+    /**
+     * Открытие модального окна
+     * @param {String} first - имя
+     * @param {String} last - фамилия
+     * @param {String} gender - пол
+     * @param {Array} memo - массив ключевых фраз
+     */
     open(first, last, gender, memo) {
         document.getElementById("modal").style.display = "block";
         document.getElementById("edit_name").value = first;
@@ -153,6 +193,10 @@ class Modal {
         } else document.getElementById("female").checked = true;
         document.getElementById("edit_memo").value = memo.join('\n');
     }
+
+    /**
+     * Запись новых данных из модального окна в таблицу
+     */
     saveChanges() {
         let newName = document.getElementById("edit_name").value;
         let newSurname = document.getElementById("edit_surname").value;
@@ -170,6 +214,9 @@ class Modal {
     }
 }
 
+/**
+ * Закрытие модального окна
+ */
 function closeModal() {
     document.getElementById("modal").style.display = "none";
 }
@@ -182,15 +229,19 @@ class Filter {
          return this._filters;
      }
 
+    /**
+     * Процедура фильтрации таблицы
+     */
      doFiltration() {
          let table = document.getElementById("tab");
+         //очистка текущей таблицы (страницы) и создание полной таблицы
          while (table.tBodies[0].firstChild) {
              table.tBodies[0].removeChild(table.tBodies[0].firstChild);
          }
          for (let i = 0; i < allBodyRows.length; i++) {
              table.tBodies[0].appendChild(allBodyRows[i]);
          }
-         //массив flag содержит номера столбцов, по которым нужно отфильтровать
+         //массив flag содержит номера столбцов, по которым нужно отфильтровать таблицу
          let flag = [];
          let index = 0;
          for (let i = 0; i < this.filters.length; i++) {
@@ -203,8 +254,8 @@ class Filter {
          let rowsToDelete = [];
          for (let i = 1; i < allBodyRows.length + 1; i++) {
              for (let j = 0; j < flag.length; j++) {
-                 //checking memo
                  if (flag[j] == this.filters.length - 1) {
+                     //проверка равенства ключевых фраз
                      let filteredMemo = this.filters[flag[j]].split('\n');
                      let tableMemo = table.rows[i].cells[flag[j]].innerHTML.split('<br>');
                      if (!checkMemoEquality(filteredMemo, tableMemo)) {
@@ -212,15 +263,18 @@ class Filter {
                          break;
                      }
                  } else {
+                     //проверка всех ячеек, кроме ключевых фраз
                  if (this.filters[flag[j]] !== table.rows[i].cells[flag[j]].innerHTML) {
                      rowsToDelete.push(table.rows[i]);
                      break;
                  } }
              }
          }
+         //удаление неподходящих строк
          for (let k = 0; k < rowsToDelete.length; k++) {
              rowsToDelete[k].remove();
          }
+         //сохранение табличных строк после фильтрации, используется при поиске по таблице
          let copied = [];
          for (let i = 0; i < document.getElementById("tab").tBodies[0].children.length; i++) {
              copied.push(document.getElementById("tab").tBodies[0].children.item(i));
@@ -229,6 +283,9 @@ class Filter {
      }
 }
 
+/**
+ * Выполнение фильтрации таблицы
+ */
 function makeFilter() {
     let gender;
     if (document.getElementById("fltr_male").checked) {
@@ -236,15 +293,24 @@ function makeFilter() {
     } else if (document.getElementById("fltr_female").checked) {
         gender = "Female";
     } else gender = "";
+    // Создание объекта фильтра
     let filter = new Filter([document.getElementById("fltr_id").value.trim(),
         document.getElementById("fltr_name").value.trim(),
         document.getElementById("fltr_surname").value.trim(), gender,
         document.getElementById("fltr_memo").value.trim()]
     );
+    //фильтрация
     filter.doFiltration();
+    //постраничный вывод результатов
     Pager(document.getElementById("tab"), 10);
 }
 
+/**
+ * Проверка эквивалентности введенных пользователем ключевых фраз и фраз из строки таблицы
+ * @param {Array} filteredMemo - массив фраз из панели фильров
+ * @param {Array} tableMemo - массив фраз в строке таблицы
+ * @returns {Boolean}
+ */
 function checkMemoEquality(filteredMemo, tableMemo) {
     if (filteredMemo.length == tableMemo.length) {
         for (let k = 0; k < filteredMemo.length; k++) {
@@ -258,6 +324,11 @@ function checkMemoEquality(filteredMemo, tableMemo) {
 
 let Pager = (function() {
 
+    /**
+     * Создание постраничной навигации таблицы
+     * @param {HTMLTableElement} docTable - ссылка на таблицу
+     * @param {number} numRowsOnPage - число строк на каждой странице
+     */
     return function (docTable, numRowsOnPage) {
         let table = docTable;
         let config = {
@@ -273,6 +344,11 @@ let Pager = (function() {
 
         renderTableState(currentPage, numRowsOnPage);
 
+        /**
+         * Сохранить копию строк в виде массива
+         * @param {HTMLCollection} rows
+         * @returns {Array}
+         */
         function copyRows(rows) {
             let copied = [];
             for (let i = 0; i < rows.length; i++) {
@@ -281,6 +357,10 @@ let Pager = (function() {
             return copied;
         }
 
+        /**
+         * Отобразить подмножество ссылок
+         * @param {Number} curPage - номер текущей страницы
+         */
         function renderLinks(curPage) {
             let currentLinkArrNum = Math.floor(curPage / config.linkOnPage);
             let pager = "<li class='pager' id=\"0\">В начало</li>",
@@ -302,6 +382,11 @@ let Pager = (function() {
             replace(/%c/g, numPages);
         }
 
+        /**
+         * Отобразить заданную часть таблицы.
+         * @param {Number} curPage - номер первой строки
+         * @param {Number} rowsNumPerPage - количество строк для отображения
+         */
         function renderTableState(curPage, rowsNumPerPage) {
             let firstRowOnCurPage = curPage * rowsNumPerPage,
                 lastRowOnCurPage = Math.min(allRowsLinks.length, firstRowOnCurPage + rowsNumPerPage);
@@ -314,6 +399,12 @@ let Pager = (function() {
             renderLinks(currentPage);
         }
 
+        /**
+         * Создание множеств ссылок
+         * @param {Number} numOfPages - количество страниц
+         * @param {Number} linksEveryPage - число ссылок на одной странице
+         * @returns {Array}
+         */
         function createPager(numOfPages, linksEveryPage) {
 
             let linksSet = [];
@@ -328,6 +419,7 @@ let Pager = (function() {
             return linksSet;
         }
 
+        // Обработчик нажатий
         navigationContainer.onclick = function(e) {
             let target = e.target;
             let start = 0;
@@ -343,6 +435,9 @@ let Pager = (function() {
     };
 }(this));
 
+/**
+ * Показ панели фильтров
+ */
 function showFilters() {
     if (document.getElementsByClassName("filters_panel")[0].style.display == "none") {
         document.getElementsByClassName("filters_panel")[0].style.display = "block";
